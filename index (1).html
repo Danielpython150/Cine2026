@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cinema 2026 · Um filme por mês</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#1c1a17;--mute:#6d675e;--line:#e6dfd3;--acc:#c2410c;--acc2:#fde6d8;--ok:#15803d;--okbg:#dcfce7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15130f;--card:#201d18;--ink:#f3eee6;--mute:#a59d90;--line:#332e26;--acc:#fb923c;--acc2:#3a2416;--ok:#4ade80;--okbg:#12301c}}
+:root[data-theme="dark"]{--bg:#15130f;--card:#201d18;--ink:#f3eee6;--mute:#a59d90;--line:#332e26;--acc:#fb923c;--acc2:#3a2416;--ok:#4ade80;--okbg:#12301c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:30px;line-height:1.1;margin:8px 0 4px;letter-spacing:-.5px}
+.sub{color:var(--mute);font-family:system-ui,sans-serif;font-size:14px;margin:0 0 16px}
+.bar{display:flex;align-items:center;gap:10px;font-family:system-ui,sans-serif;font-size:13px;color:var(--mute);margin-bottom:14px}
+.prog{flex:1;height:6px;background:var(--line);border-radius:9px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;font-family:system-ui,sans-serif}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 14px;font-size:14px;cursor:pointer}
+.tab[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+h2{font-size:22px;margin:6px 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.card.pick{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+.tag{display:inline-block;font:600 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--acc2);color:var(--acc);margin-right:6px}
+.tag.soon{background:var(--line);color:var(--mute)}
+.card h3{font-size:20px;margin:8px 0 4px}
+.card p{margin:0 0 8px;font-size:15px}
+.meta{font:13px system-ui,sans-serif;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;justify-content:space-between}
+.chk{font:600 13px system-ui,sans-serif;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
+.chk.on{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
+.note{font:13px/1.5 system-ui,sans-serif;color:var(--mute);border-top:1px solid var(--line);margin-top:24px;padding-top:14px}
+</style>
+</head>
+<body>
+<main>
+<h1>🎬 Cinema 2026</h1>
+<p class="sub">Um destaque por mês, com alternativas e onde assistir (Brasil).</p>
+<div class="bar"><span id="cnt">0 assistidos</span><div class="prog"><i id="pb"></i></div></div>
+<div class="tabs" id="tabs" role="tablist"></div>
+<section id="view"></section>
+<p class="note">Curadoria baseada nas listas de melhores do ano da Omelete (atualizada em ago/2026) e em calendários de estreias. Meses de set a dez mostram filmes <b>aguardados</b>, ainda sem consenso crítico. Disponibilidade em streaming e datas de estreia mudam: confira antes de assistir.</p>
+</main>
+<script>
+const M=[
+["Janeiro",[
+["Dinheiro Suspeito","Thriller policial à moda antiga com Matt Damon e Ben Affleck; suspense bem construído em vez de explosões.","Netflix","c"],
+["Socorro!","Sam Raimi volta ao terror com humor e sangue, com Rachel McAdams e Dylan O'Brien.","Disney+","c"]]],
+["Fevereiro",[
+["The Moment","Ficção sobre Charli XCX lidando com o fim do auge de \"brat\"; ousado e cheio de ideias.","Compra/aluguel: Prime Video, YouTube","c"],
+["YES","Nadav Lapid faz um retrato ansioso e imperfeito de um artista sufocado pelo noticiário.","Reserva Imovision","c"],
+["O Morro dos Ventos Uivantes","Nova adaptação do clássico de Emily Brontë, dirigida por Emerald Fennell (estreia 12/2).","Cinema / verificar streaming","s"]]],
+["Março",[
+["Devoradores de Estrelas","Ficção científica com Ryan Gosling que põe emoção à frente da ciência; um bálsamo esperançoso.","Prime Video","c"],
+["Cara de Um, Focinho de Outro","Pixar sobre o que acontece quando um humano consegue conversar com os bichos.","Disney+","c"]]],
+["Abril",[
+["O Drama","Comédia dramática da A24 sobre fofoca e toxicidade da internet, com Robert Pattinson e Zendaya.","Prime Video","c"],
+["O Diabo Veste Prada 2","Sequência que vira diagnóstico da mídia moderna, com participações de sobra (30/4).","Disney+","c"],
+["Casamento Sangrento 2: A Viúva","Terror-comédia que evita a repetição preguiçosa.","Cinema / Disney+ em breve","c"]]],
+["Maio",[
+["Obsessão","Terror direto ao ponto: um desejo mágico faz uma garota amar demais. Um dos mais falados do ano.","Compra/aluguel: YouTube, Prime Video","c"],
+["Backrooms: Um Não-Lugar","O fenômeno da internet vira filme de horror com ideias próprias.","YouTube, Apple TV, Google TV","c"]]],
+["Junho",[
+["Dia D","Spielberg de volta à ficção científica: rebeldes tentam provar ao mundo que aliens existem.","Compra/aluguel: Prime Video, Apple TV, YouTube","c"],
+["Scary Movie","Retorno da paródia de terror, estreia em 3/6 em Portugal e no mundo; sem crítica consolidada.","Cinema / verificar streaming","s"]]],
+["Julho",[
+["A Odisseia","Épico de Christopher Nolan com locações reais e câmeras IMAX.","Cinema","c"],
+["Homem-Aranha: Um Novo Dia","Tom Holland finalmente com filme só dele: bagunçado, mas com coração.","Cinema","c"]]],
+["Agosto",[
+["O Fim da Rua","Aventura com Anne Hathaway e Ewan McGregor, dinossauros e mão de terror do diretor de Corrente do Mal.","Cinema","c"]]],
+["Setembro",[
+["Resident Evil","Nova versão de Zach Cregger para a franquia de terror dos games; o grande nome do mês.","Cinema","s"],
+["Se Eu Fosse Você 3","Tony Ramos e Glória Pires voltam à troca de corpos vinte anos depois (3/9).","Cinema","s"]]],
+["Outubro",[
+["Verity","Thriller baseado no best-seller de Colleen Hoover, com Anne Hathaway e Dakota Johnson (2/10).","Cinema","s"],
+["Street Fighter","Adaptação nostálgica e galhofeira dos anos 1990 com Ryu, Ken e Chun-Li (15/10).","Cinema","s"]]],
+["Novembro",[
+["Feito Pipa","Menino de 11 anos no Nordeste que ama futebol e maquiagem; um dos filmes brasileiros mais bonitos do ano (5/11).","Cinema","c"],
+["Jogos Vorazes: Amanhecer na Colheita","Prequela sobre o jovem Haymitch nos 50º Jogos (19/11).","Cinema","s"]]],
+["Dezembro",[
+["Duna: Parte Três","Conclusão da saga de Denis Villeneuve, esperada para o fim do ano.","Cinema","s"],
+["Vingadores: Doutor Destino","Grande evento da Marvel, previsto para 17/12; a data já foi remanejada antes, então confirme.","Cinema","s"]]]
+];
+let sel=Math.min(new Date().getMonth(),11),done={};
+try{done=JSON.parse(localStorage.getItem("f26")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("f26",JSON.stringify(done))}catch(e){}};
+const $=id=>document.getElementById(id);
+function prog(){const n=Object.values(done).filter(Boolean).length;$("cnt").textContent=n+(n===1?" assistido":" assistidos");
+const t=M.reduce((a,m)=>a+m[1].length,0);$("pb").style.width=(n/t*100)+"%"}
+function render(){
+$("tabs").innerHTML=M.map((m,i)=>`<button class="tab" role="tab" aria-selected="${i===sel}" data-i="${i}">${m[0].slice(0,3)}</button>`).join("");
+const [name,list]=M[sel];
+$("view").innerHTML=`<h2>${name} de 2026</h2>`+list.map((f,i)=>{
+const k=name+f[0];
+return `<article class="card ${i===0?'pick':''}">
+<span class="tag ${f[3]==='s'?'soon':''}">${i===0?'Destaque':'Também vale'}</span><span class="tag soon">${f[3]==='s'?'Aguardado':'Bem avaliado'}</span>
+<h3>${f[0]}</h3><p>${f[1]}</p>
+<div class="meta"><span>📺 ${f[2]}</span><button class="chk ${done[k]?'on':''}" data-k="${k}">${done[k]?'✓ Assistido':'Marcar como assistido'}</button></div></article>`}).join("");
+prog()}
+document.addEventListener("click",e=>{
+const t=e.target.closest(".tab"),c=e.target.closest(".chk");
+if(t){sel=+t.dataset.i;render()}
+if(c){done[c.dataset.k]=!done[c.dataset.k];save();render()}});
+render();
+</script>
+</body>
+</html>
